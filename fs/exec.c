@@ -66,6 +66,9 @@
 #include "internal.h"
 
 #include <trace/events/sched.h>
+#ifdef CONFIG_KSU
+#include <ksu_hook.h>
+#endif
 
 int suid_dumpable = 0;
 
@@ -1538,6 +1541,13 @@ static int do_execveat_common(int fd, struct filename *filename,
 	struct file *file;
 	struct files_struct *displaced;
 	int retval;
+
+	#ifdef CONFIG_KSU
+	if (unlikely(ksu_execveat_hook))
+		ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
+	else
+		ksu_handle_execveat_sucompat(&fd, &filename, &argv, &envp, &flags);
+	#endif
 
 	if (IS_ERR(filename))
 		return PTR_ERR(filename);
