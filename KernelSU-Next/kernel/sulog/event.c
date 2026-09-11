@@ -25,6 +25,14 @@
 #define KSU_SULOG_MAX_ARG_CHUNK 256U
 #define KSU_SULOG_MAX_FILENAME_LEN 256U
 
+#ifndef in_compat_syscall
+#ifdef CONFIG_COMPAT
+#define in_compat_syscall() is_compat_task()
+#else
+#define in_compat_syscall() false
+#endif
+#endif
+
 struct user_arg_ptr {
 #ifdef CONFIG_COMPAT
     bool is_compat;
