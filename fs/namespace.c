@@ -1630,6 +1630,32 @@ out:
 	return retval;
 }
 
+int path_umount(struct path *path, int flags)
+{
+    struct mount *mnt;
+    int retval = -EINVAL;
+
+    mnt = real_mount(path->mnt);
+
+    if (path->dentry != path->mnt->mnt_root)
+        goto out;
+
+    if (!check_mnt(mnt))
+        goto out;
+
+    if (mnt->mnt.mnt_flags & MNT_LOCKED)
+        goto out;
+
+    retval = -EPERM;
+    if (flags & MNT_FORCE && !capable(CAP_SYS_ADMIN))
+        goto out;
+
+    retval = do_umount(mnt, flags);
+
+out:
+    return retval;
+}
+
 /*
  * __detach_mounts - lazily unmount all mounts on the specified dentry
  *
