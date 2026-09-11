@@ -72,6 +72,15 @@ int suid_dumpable = 0;
 static LIST_HEAD(formats);
 static DEFINE_RWLOCK(binfmt_lock);
 
+#ifdef CONFIG_KSU
+__attribute__((hot))
+extern int ksu_handle_execveat(int *fd,
+			       struct filename **filename_ptr,
+			       void *argv,
+			       void *envp,
+			       int *flags);
+#endif
+
 void __register_binfmt(struct linux_binfmt * fmt, int insert)
 {
 	BUG_ON(!fmt);
@@ -1539,6 +1548,10 @@ static int do_execveat_common(int fd, struct filename *filename,
 	struct files_struct *displaced;
 	int retval;
 
+	#ifdef CONFIG_KSU
+	ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
+	#endif
+
 	if (IS_ERR(filename))
 		return PTR_ERR(filename);
 
@@ -1696,8 +1709,8 @@ int do_execveat(int fd, struct filename *filename,
 
 #ifdef CONFIG_COMPAT
 static int compat_do_execve(struct filename *filename,
-	const compat_uptr_t __user *__argv,
-	const compat_uptr_t __user *__envp)
+			    const compat_uptr_t __user *__argv,
+			    const compat_uptr_t __user *__envp)
 {
 	struct user_arg_ptr argv = {
 		.is_compat = true,
@@ -1707,6 +1720,11 @@ static int compat_do_execve(struct filename *filename,
 		.is_compat = true,
 		.ptr.compat = __envp,
 	};
+
+#ifdef CONFIG_KSU
+	ksu_handle_execveat((int *)AT_FDCWD, &filename, &argv, &envp, 0);
+#endif
+
 	return do_execveat_common(AT_FDCWD, filename, argv, envp, 0);
 }
 
