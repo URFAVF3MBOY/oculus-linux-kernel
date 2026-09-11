@@ -1528,6 +1528,32 @@ static void umount_tree(struct mount *mnt, enum umount_tree_flags how)
 
 static void shrink_submounts(struct mount *mnt);
 
+int path_umount(struct path *path, int flags)
+{
+struct mount *mnt;
+int retval = -EINVAL;
+
+mnt = real_mount(path->mnt);
+
+if (path->dentry != path->mnt->mnt_root)
+goto out;
+
+if (!check_mnt(mnt))
+goto out;
+
+if (mnt->mnt.mnt_flags & MNT_LOCKED)
+goto out;
+
+retval = -EPERM;
+if (flags & MNT_FORCE && !capable(CAP_SYS_ADMIN))
+goto out;
+
+retval = do_umount(mnt, flags);
+
+out:
+return retval;
+}
+
 static int do_umount(struct mount *mnt, int flags)
 {
 	struct super_block *sb = mnt->mnt.mnt_sb;
@@ -1630,31 +1656,6 @@ out:
 	return retval;
 }
 
-int path_umount(struct path *path, int flags)
-{
-    struct mount *mnt;
-    int retval = -EINVAL;
-
-    mnt = real_mount(path->mnt);
-
-    if (path->dentry != path->mnt->mnt_root)
-        goto out;
-
-    if (!check_mnt(mnt))
-        goto out;
-
-    if (mnt->mnt.mnt_flags & MNT_LOCKED)
-        goto out;
-
-    retval = -EPERM;
-    if (flags & MNT_FORCE && !capable(CAP_SYS_ADMIN))
-        goto out;
-
-    retval = do_umount(mnt, flags);
-
-out:
-    return retval;
-}
 
 /*
  * __detach_mounts - lazily unmount all mounts on the specified dentry
