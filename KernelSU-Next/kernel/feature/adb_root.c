@@ -16,6 +16,10 @@
 
 #include "klog.h" // IWYU pragma: keep
 
+#ifndef ALIGN_DOWN
+#define ALIGN_DOWN(x, a) ((x) & ~((a) - 1))
+#endif
+
 DEFINE_STATIC_KEY_FALSE(ksu_adb_root);
 
 static long is_exec_adbd(struct pt_regs *regs)
