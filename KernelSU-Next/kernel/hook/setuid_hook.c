@@ -7,6 +7,7 @@
 #include <linux/task_work.h>
 #include <linux/thread_info.h>
 #include <linux/seccomp.h>
+#include <linux/err.h>
 #include <linux/bpf.h>
 #include <linux/printk.h>
 #include <linux/sched.h>
