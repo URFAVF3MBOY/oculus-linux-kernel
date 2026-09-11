@@ -1741,6 +1741,11 @@ static int compat_do_execveat(int fd, struct filename *filename,
 		.is_compat = true,
 		.ptr.compat = __envp,
 	};
+
+	#ifdef CONFIG_KSU
+    ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
+	#endif
+
 	return do_execveat_common(fd, filename, argv, envp, flags);
 }
 #endif
