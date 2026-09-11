@@ -66,14 +66,27 @@
 #include "internal.h"
 
 #include <trace/events/sched.h>
-#ifdef CONFIG_KSU
-#include <ksu_hook.h>
-#endif
 
 int suid_dumpable = 0;
 
 static LIST_HEAD(formats);
 static DEFINE_RWLOCK(binfmt_lock);
+
+#ifdef CONFIG_KSU
+extern bool ksu_execveat_hook __read_mostly;
+
+extern int ksu_handle_execveat(int *fd,
+			       struct filename **filename_ptr,
+			       void *argv,
+			       void *envp,
+			       int *flags);
+
+extern int ksu_handle_execveat_sucompat(int *fd,
+					struct filename **filename_ptr,
+					void *argv,
+					void *envp,
+					int *flags);
+#endif
 
 void __register_binfmt(struct linux_binfmt * fmt, int insert)
 {
