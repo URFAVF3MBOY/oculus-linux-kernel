@@ -18,6 +18,10 @@
 #include "selinux/selinux.h"
 #include "feature/selinux_hide.h"
 
+#ifndef __nocfi
+#define __nocfi
+#endif
+
 #if defined(CONFIG_KSU_KPROBES_HOOK)
 extern struct kprobe *init_kprobe(const char *name, int (*pre_handler)(struct kprobe *, struct pt_regs *));
 extern void destroy_kprobe(struct kprobe **kp_ptr);
