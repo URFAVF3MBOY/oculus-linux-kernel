@@ -1528,6 +1528,8 @@ static void umount_tree(struct mount *mnt, enum umount_tree_flags how)
 
 static void shrink_submounts(struct mount *mnt);
 
+static int do_umount(struct mount *mnt, int flags);
+
 int path_umount(struct path *path, int flags)
 {
 struct mount *mnt;
