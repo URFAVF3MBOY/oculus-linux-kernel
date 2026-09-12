@@ -4,8 +4,6 @@
 #include <linux/types.h>
 #include <linux/uaccess.h>
 
-#define KERNEL_SU_UAPI_VERSION 2
-
 // IOCTL handler types
 typedef int (*ksu_ioctl_handler_t)(void __user *arg);
 typedef bool (*ksu_perm_check_t)(void);
