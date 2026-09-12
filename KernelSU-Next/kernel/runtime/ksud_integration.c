@@ -177,7 +177,9 @@ static bool check_argv(struct user_arg_ptr argv, int index,
 
 static void ksu_initialize_selinux_tw_func(struct callback_head *cb)
 {
+	pr_alert("KSU_DEBUG: tw_func starting apply_kernelsu_rules (second_stage reapply)\n");
 	apply_kernelsu_rules();
+	pr_alert("KSU_DEBUG: tw_func finished apply_kernelsu_rules (second_stage reapply)\n");
 	cache_sid();
 	setup_ksu_cred();
 	kfree(cb);
