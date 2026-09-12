@@ -98,6 +98,7 @@ static int apply_kernelsu_rules_fn(void *ptr)
     ksu_type(db, KERNEL_SU_DOMAIN, "domain");
     ksu_permissive(db, KERNEL_SU_DOMAIN);
 	ksu_permissive(db, "init");
+	ksu_typeattribute(db, KERNEL_SU_DOMAIN, "mlstrustedsubject");
     ksu_typeattribute(db, KERNEL_SU_DOMAIN, "mlstrustedsubject");
     ksu_typeattribute(db, KERNEL_SU_DOMAIN, "netdomain");
     ksu_typeattribute(db, KERNEL_SU_DOMAIN, "bluetoothdomain");
