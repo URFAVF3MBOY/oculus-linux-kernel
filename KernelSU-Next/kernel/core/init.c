@@ -140,7 +140,9 @@ int __init kernelsu_init(void)
 	} else {
 		ksu_syscall_hook_manager_init();
 
+		pr_alert("KSU_DEBUG: about to call apply_kernelsu_rules (builtin path)\n");
 		apply_kernelsu_rules();
+		pr_alert("KSU_DEBUG: apply_kernelsu_rules returned (builtin path)\n");
 		
 		ksu_lsm_hook_init();
 
