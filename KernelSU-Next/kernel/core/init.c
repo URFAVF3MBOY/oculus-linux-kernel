@@ -139,6 +139,8 @@ int __init kernelsu_init(void)
 
 	} else {
 		ksu_syscall_hook_manager_init();
+
+		apply_kernelsu_rules();
 		
 		ksu_lsm_hook_init();
 
