@@ -950,6 +950,24 @@ bool ksu_typeattribute(struct policydb *db, const char *type, const char *attr)
     return add_typeattribute(db, type, attr);
 }
 
+bool ksu_bound_type(struct policydb *db, const char *type_name, const char *parent_name)
+{
+    struct type_datum *type = (struct type_datum *)symtab_search(&db->p_types, type_name);
+    if (type == NULL) {
+        pr_info("bound_type: type %s does not exist\n", type_name);
+        return false;
+    }
+
+    struct type_datum *parent = (struct type_datum *)symtab_search(&db->p_types, parent_name);
+    if (parent == NULL) {
+        pr_info("bound_type: parent type %s does not exist\n", parent_name);
+        return false;
+    }
+
+    type->bounds = parent->value;
+    return true;
+}
+
 bool ksu_exists(struct policydb *db, const char *type)
 {
     return symtab_search(&db->p_types, type) != NULL;
